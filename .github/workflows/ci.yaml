@@ -1,0 +1,77 @@
+name: Integration Testing
+
+on:
+  push:
+    branches:
+      - 'main'
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  # job 1: test go module
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+
+      # step 1: set up go
+      - name: Set up Go 1.16
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.16
+      
+      # step 2: checkout repository code
+      - name: Checkout code into workspace directory
+        uses: actions/checkout@v2
+
+      # step 3: install dependencies
+      - name: Install all Go dependencies
+        run: go get
+      
+      # step 4: run test
+      - name: go test
+        run: go test
+  # Label of the container job
+  container-job:
+    # Containers must run in Linux based operating systems
+    runs-on: ubuntu-latest
+    # Docker Hub image that `container-job` executes in
+    container: node:10.18-jessie
+
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      # step 1: set up go
+      - name: Set up Go 1.16
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.16
+      
+      # step 2: checkout repository code
+      - name: Checkout code into workspace directory
+        uses: actions/checkout@v2
+
+      # step 3: install dependencies
+      - name: Install all Go dependencies
+        run: go get
+      
+      # step 4: run demo
+      - name: go run
+        run: go run ./cmd/main.go serve
