@@ -1,0 +1,42 @@
+###
+GET http://localhost:9099
+
+
+###
+GET http://localhost:9099/error?test=fail HTTP/1.1
+request_id: 1232
+
+[
+    {
+        "test":"error",
+        "test2":"fail"
+    },
+    {
+        "test":"error1",
+        "test2":"fail2"
+    }
+]
+
+###
+GET http://localhost:9099/error?test=fail&err_debug=true HTTP/1.1
+request_id: 1232
+
+{
+    "test":"error",
+    "test2":"fail"
+}
+
+###
+GET http://localhost:9099/error?test=fail&err_req=true HTTP/1.1
+request_id: 1232
+
+{
+    "test":"error",
+    "test2":"fail"
+}
+
+###
+GET http://localhost:9099/error?test=fail&err_req=true HTTP/1.1
+X-Request-Id: 1111
+
+Testing non json body value.

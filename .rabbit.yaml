@@ -1,0 +1,8 @@
+service:
+  port: 9099
+db:
+  url: localhost:5432
+  dbname: rabbit_db
+  user: root
+  pass: root
+
